@@ -2,9 +2,13 @@
 set -euo pipefail
 
 # -------- CONFIG --------
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 STACK_NAME="aws_resources_provisioned"
-TEMPLATE_FILE="../templates/aws_parent_stack.yml"
+TEMPLATE_FILE="${SCRIPT_DIR}/../templates/aws_parent_stack.yml"
 REGION="us-east-1"
+
+echo "Script directory: $SCRIPT_DIR"
+echo "Template file: $TEMPLATE_FILE"
 
 # -------- DEPLOY --------
 echo "Deploying CloudFormation stack: $STACK_NAME"
