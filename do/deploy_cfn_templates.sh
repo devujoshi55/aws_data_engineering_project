@@ -3,7 +3,7 @@ set -euo pipefail
 
 # -------- CONFIG --------
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-STACK_NAME="aws_resources_provisioned"
+STACK_NAME="aws-resources-provisioned"
 TEMPLATE_FILE="${SCRIPT_DIR}/../templates/aws_parent_stack.yml"
 REGION="us-east-1"
 
