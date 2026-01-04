@@ -5,20 +5,20 @@ Resources:
   SourceABucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: aws_engineering_source_bucket
-    VersioningConfiguration:
-      Status: Enabled
-    LifecycleConfiguration:
-      Rules:
-        - Id: LifeCycleRule1
-          Status: Enabled
-          Prefix: source_aws
-          Transitions:
-            - StorageClass: STANDARD_IA
-              TransitionInDays: 30
-            - StorageClass: GLACIER
-              TransitionInDays: 90
-          ExpirationInDays: 365
+      BucketName: aws-engineering-source-bucket
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: LifeCycleRule1
+            Status: Enabled
+            Prefix: source_aws
+            Transitions:
+              - StorageClass: STANDARD_IA
+                TransitionInDays: 30
+              - StorageClass: GLACIER
+                TransitionInDays: 90
+            ExpirationInDays: 365
 
   GlueETLRole:
     Type: AWS::IAM::Role
