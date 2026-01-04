@@ -16,7 +16,8 @@ echo "Deploying CloudFormation stack: $STACK_NAME"
 aws cloudformation deploy \
   --stack-name "$STACK_NAME" \
   --template-file "$TEMPLATE_FILE" \
-  --region "$REGION"
+  --region "$REGION" \
+  --capabilities CAPABILITY_NAMED_IAM
 
 # -------- STATUS --------
 if [ $? -eq 0 ]; then
