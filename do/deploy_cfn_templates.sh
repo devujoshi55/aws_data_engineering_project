@@ -3,7 +3,7 @@ set -euo pipefail
 
 # -------- CONFIG --------
 STACK_NAME="aws_resources_provisioned"
-TEMPLATE_FILE="../aws_parent_stack.yml"
+TEMPLATE_FILE="../templates/aws_parent_stack.yml"
 REGION="us-east-1"
 
 # -------- DEPLOY --------

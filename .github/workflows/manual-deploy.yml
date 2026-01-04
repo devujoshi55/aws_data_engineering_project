@@ -19,8 +19,9 @@ jobs:
     
             - name: Install cfn-lint
               run: python -m pip install --upgrade pip cfn-lint
-            # - name: Lint templates
-            #   run: cfn-lint path/to/template.yaml
+
+            - name: Lint templates
+              run: cfn-lint templates/**/*.yml
 
     deploy:
         needs: build
