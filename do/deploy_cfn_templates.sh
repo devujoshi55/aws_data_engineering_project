@@ -13,16 +13,25 @@ echo "Template file: $TEMPLATE_FILE"
 # -------- DEPLOY --------
 echo "Deploying CloudFormation stack: $STACK_NAME"
 
+DEPLOY_STATUS=0
 aws cloudformation deploy \
   --stack-name "$STACK_NAME" \
   --template-file "$TEMPLATE_FILE" \
   --region "$REGION" \
-  --capabilities CAPABILITY_NAMED_IAM
+  --capabilities CAPABILITY_NAMED_IAM || DEPLOY_STATUS=$?
 
 # -------- STATUS --------
-if [ $? -eq 0 ]; then
+if [ $DEPLOY_STATUS -eq 0 ]; then
   echo "✅ Stack deployment successful"
 else
   echo "❌ Stack deployment failed"
-  exit 1
 fi
+
+echo "Stack events:"
+aws cloudformation describe-stack-events \
+  --stack-name "$STACK_NAME" \
+  --region "$REGION" \
+  --query 'StackEvents[*].[Timestamp,LogicalResourceId,ResourceStatus,ResourceStatusReason]' \
+  --output table
+
+exit $DEPLOY_STATUS
