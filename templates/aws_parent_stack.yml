@@ -5,7 +5,7 @@ Resources:
   SourceABucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: aws-engineering-source-bucket-A_Z
+      BucketName: aws-engineering-source-bucket
       # VersioningConfiguration:
       #   Status: Enabled
       # LifecycleConfiguration:
