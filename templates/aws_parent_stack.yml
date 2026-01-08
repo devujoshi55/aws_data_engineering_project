@@ -6,19 +6,19 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: aws-engineering-source-bucket
-      # VersioningConfiguration:
-      #   Status: Enabled
-      # LifecycleConfiguration:
-      #   Rules:
-      #     - Id: LifeCycleRule1
-      #       Status: Enabled
-      #       Prefix: source_aws
-      #       Transitions:
-      #         - StorageClass: STANDARD_IA
-      #           TransitionInDays: 30
-      #         - StorageClass: GLACIER
-      #           TransitionInDays: 90
-      #       ExpirationInDays: 365
+      VersioningConfiguration:
+        Status: Enabled
+      LifecycleConfiguration:
+        Rules:
+          - Id: LifeCycleRule1
+            Status: Enabled
+            Prefix: source_aws
+            Transitions:
+              - StorageClass: STANDARD_IA
+                TransitionInDays: 30
+              - StorageClass: GLACIER
+                TransitionInDays: 90
+            ExpirationInDays: 365
 
   GlueETLRole:
     Type: AWS::IAM::Role
@@ -33,18 +33,18 @@ Resources:
               Service: glue.amazonaws.com
             Action:
               - sts:AssumeRole
-      # Policies:
-      #   - PolicyName: ListBucketItems
-      #     PolicyDocument:
-      #       Version: '2012-10-17'
-      #       Statement:
-      #         - Effect: Allow
-      #           Action:
-      #             - s3:ListBucket
-      #             - s3:GetObject
-      #           Resource:
-      #             - !GetAtt SourceABucket.Arn
-      #             - !Sub '${SourceABucket.Arn}/*'
+      Policies:
+        - PolicyName: ListBucketItems
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                  - s3:GetObject
+                Resource:
+                  - !GetAtt SourceABucket.Arn
+                  - !Sub '${SourceABucket.Arn}/*'
 
   # SourceABucketPolicy:
   #   Type: AWS::S3::BucketPolicy
