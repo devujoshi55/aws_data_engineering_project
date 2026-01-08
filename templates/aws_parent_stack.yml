@@ -2,23 +2,23 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: 'This is the main stack to deploy all resources in AWS'
 
 Resources:
-  # SourceABucket:
-  #   Type: AWS::S3::Bucket
-  #   Properties:
-  #     BucketName: aws-engineering-source-bucket
-  #     VersioningConfiguration:
-  #       Status: Enabled
-  #     LifecycleConfiguration:
-  #       Rules:
-  #         - Id: LifeCycleRule1
-  #           Status: Enabled
-  #           Prefix: source_aws
-  #           Transitions:
-  #             - StorageClass: STANDARD_IA
-  #               TransitionInDays: 30
-  #             - StorageClass: GLACIER
-  #               TransitionInDays: 90
-  #           ExpirationInDays: 365
+  SourceABucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: aws-engineering-source-bucket-A_Z
+      # VersioningConfiguration:
+      #   Status: Enabled
+      # LifecycleConfiguration:
+      #   Rules:
+      #     - Id: LifeCycleRule1
+      #       Status: Enabled
+      #       Prefix: source_aws
+      #       Transitions:
+      #         - StorageClass: STANDARD_IA
+      #           TransitionInDays: 30
+      #         - StorageClass: GLACIER
+      #           TransitionInDays: 90
+      #       ExpirationInDays: 365
 
   GlueETLRole:
     Type: AWS::IAM::Role
