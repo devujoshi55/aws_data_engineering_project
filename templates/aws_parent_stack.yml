@@ -1,5 +1,5 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'This is the main stack to deploy all resources in AWS'
+Description: 'Main stack to deploy all resources in AWS'
 
 Resources:
   SourceABucket:
@@ -19,6 +19,13 @@ Resources:
               - StorageClass: GLACIER
                 TransitionInDays: 90
             ExpirationInDays: 365
+
+  SourceBBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: aws-engineering-destination-bucket
+      VersioningConfiguration:
+        Status: Enabled
 
   GlueETLRole:
     Type: AWS::IAM::Role
@@ -41,25 +48,43 @@ Resources:
               - Effect: Allow
                 Action:
                   - s3:ListBucket
+                Resource: !GetAtt SourceABucket.Arn
+              - Effect: Allow
+                Action:
                   - s3:GetObject
-                Resource:
-                  - !GetAtt SourceABucket.Arn
-                  - !Sub '${SourceABucket.Arn}/*'
+                Resource: !Sub '${SourceABucket.Arn}/*'
+      ManagedPolicyArns:
+        - !Ref S3BucketWritePolicy
 
-  # SourceABucketPolicy:
-  #   Type: AWS::S3::BucketPolicy
-  #   Properties:
-  #     Bucket: !Ref SourceABucket
-  #     PolicyDocument:
-  #       Version: '2012-10-17'
-  #       Statement:
-  #         - Sid: AllowRoleToAccessBucket
-  #           Effect: Allow
-  #           Principal:
-  #             AWS: !GetAtt GlueETLRole.Arn
-  #           Action:
-  #             - s3:GetObject
-  #             - s3:PutObject
-  #           Resource:
-  #             - !Sub '${SourceABucket.Arn}/*'
+  SourceABucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref SourceABucket
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Sid: AllowRoleToAccessBucket
+            Effect: Allow
+            Principal:
+              AWS: !GetAtt GlueETLRole.Arn
+            Action:
+              - s3:GetObject
+              - s3:PutObject
+            Resource: !Sub '${SourceABucket.Arn}/*'
 
+  S3BucketWritePolicy:
+    Type: AWS::IAM::ManagedPolicy
+    Properties:
+      ManagedPolicyName: GluePermissionToWriteS3
+      PolicyDocument:
+        Version: '2012-10-17'
+        Statement:
+          - Effect: Allow
+            Action:
+              - s3:PutObject
+            Resource: !Sub '${SourceBBucket.Arn}/*'
+
+Outputs:
+  oGlueEtlRole:
+    Description: ARN of the Glue ETL Role
+    Value: !GetAtt GlueETLRole.Arn
