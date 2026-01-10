@@ -3,7 +3,7 @@ Description: 'This Stack contains all Glue Databse and Tables required for ETL'
 
 Parameters:
   pDestinationBucket:
-    Type: string
+    Type: String
 
 Resources:
   FinanceDatabase:

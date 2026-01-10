@@ -85,7 +85,7 @@ Resources:
             Resource: !Sub '${SourceBBucket.Arn}/*'
 
   GlueStack:
-    Type: AWS::Cloudformation::Stack
+    Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: ./aws_glue_catalog.yml
       Parameters:
