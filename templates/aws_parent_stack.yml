@@ -84,7 +84,18 @@ Resources:
               - s3:PutObject
             Resource: !Sub '${SourceBBucket.Arn}/*'
 
+  GlueStack:
+    Type: AWS::Cloudformation::Stack
+    Properties:
+      TemplateURL: ./aws_glue_catalog.yml
+      Parameters:
+        pDestinationBucket: !Ref SourceBBucket
+
 Outputs:
   oGlueEtlRole:
     Description: ARN of the Glue ETL Role
     Value: !GetAtt GlueETLRole.Arn
+
+  oDestinationBucket:
+    Description: name of the destination bucket
+    Value: !Ref SourceBBucket

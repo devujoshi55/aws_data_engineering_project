@@ -1,0 +1,48 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'This Stack contains all Glue Databse and Tables required for ETL'
+
+Parameters:
+  pDestinationBucket:
+    Type: string
+
+Resources:
+  FinanceDatabase:
+    Type: AWS::Glue::Database
+    Properties:
+      CatalogId: !Ref "AWS::AccountId"
+      DatabaseInput:
+        Name: finance_curated
+        Description: "Databse for storing curated data"
+  
+  AccountsTable:
+    Type: AWS::Glue::Table
+    Properties:
+      CatalogId: !Ref "AWS::AccountId"
+      DatabaseName: !Ref FinanceDatabase
+      TableInput:
+        Name: accounts_table
+        Description: "Table to contain data for accounts transactions"
+        TableType: EXTERNAL_TABLE
+        Parameters:
+          classification: csv
+          typeOfData: file
+        StorageDescriptor:
+          Columns:
+            - Name: transaction_id
+              Type: int
+            - Name: accounts_name
+              Type: string
+            - Name: amount_credited
+              Type: double
+            - Name: amount_debited
+              Type: double
+            - Name: dt_of_trnsctn
+              Type: date
+          Location: !Sub 's3://${pDestinationBucket}/accounts_data'
+          InputFormat: org.apache.hadoop.mapred.TextInputFormat
+          OutputFormat: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
+          Compressed: false
+          SerdeInfo:
+            SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
+            Parameters:
+              field.delim: ","
