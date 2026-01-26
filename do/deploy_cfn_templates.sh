@@ -24,7 +24,7 @@ aws cloudformation deploy \
 # -------- FETCH ARTIFACT BUCKET --------
 BUCKET=$(aws cloudformation describe-stacks \
   --stack-name "$BOOTSTRAP_STACK" \
-  --query "Stacks[0].Outputs[?OutputKey=='TemplateBucketName'].OutputValue" \
+  --query "Stacks[0].Outputs[?OutputKey=='CloudFormationBucketName'].OutputValue" \
   --output text)
 
 echo "Using artifact bucket: $BUCKET"
