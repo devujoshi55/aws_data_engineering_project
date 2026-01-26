@@ -9,16 +9,48 @@ Resources:
   FinanceDatabase:
     Type: AWS::Glue::Database
     Properties:
-      CatalogId: !Ref "AWS::AccountId"
+      CatalogId: !Ref AWS::AccountId
       DatabaseInput:
         Name: finance_curated
         Description: "Databse for storing curated data"
+
+  CustomersTable:
+    Type: AWS::Glue::Table
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: finance_curated
+      TableInput:
+        Name: customers_table
+        Description: "Table that contains customer master data"
+        TableType: EXTERNAL_TABLE
+        Parameters:
+          classification: parquet
+          typeOfData: file
+        StorageDescriptor:
+          Columns:
+            - Name: customer_id
+              Type: string
+            - Name: first_name
+              Type: string
+            - Name: last_name
+              Type: string
+            - Name: date_of_birth
+              Type: date
+            - Name: email
+              Type: string
+            - Name: phone
+              Type: string
+          Location: !Sub 's3://${pDestinationBucket}/customers'
+          InputFormat: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+          OutputFormat: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+          SerdeInfo:
+            SerializationLibrary: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
   
   AccountsTable:
     Type: AWS::Glue::Table
     Properties:
-      CatalogId: !Ref "AWS::AccountId"
-      DatabaseName: !Ref FinanceDatabase
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: finance_curated
       TableInput:
         Name: accounts_table
         Description: "Table to contain data for accounts transactions"
@@ -28,16 +60,16 @@ Resources:
           typeOfData: file
         StorageDescriptor:
           Columns:
-            - Name: transaction_id
-              Type: int
-            - Name: accounts_name
+            - Name: account_id
               Type: string
-            - Name: amount_credited
-              Type: double
-            - Name: amount_debited
-              Type: double
-            - Name: dt_of_trnsctn
+            - Name: customer_id
+              Type: string
+            - Name: account_type
+              Type: string
+            - Name: open_date
               Type: date
+            - Name: status
+              Type: string
           Location: !Sub 's3://${pDestinationBucket}/accounts_data'
           InputFormat: org.apache.hadoop.mapred.TextInputFormat
           OutputFormat: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
@@ -46,3 +78,33 @@ Resources:
             SerializationLibrary: org.apache.hadoop.hive.serde2.lazy.LazySimpleSerDe
             Parameters:
               field.delim: ","
+
+  PaymentsTable:
+    Type: AWS::Glue::Table
+    Properties:
+      CatalogId: !Ref AWS::AccountId
+      DatabaseName: finance_curated
+      TableInput:
+        Name: payments_table
+        Description: "Customer payments"
+        TableType: EXTERNAL_TABLE
+        Parameters:
+          classification: parquet
+        StorageDescriptor:
+          Columns:
+            - Name: payment_id
+              Type: string
+            - Name: customer_id
+              Type: string
+            - Name: amount
+              Type: double
+            - Name: payment_method
+              Type: string
+            - Name: payment_ts
+              Type: timestamp
+          Location: !Sub 's3://${pDestinationBucket}/payments'
+          InputFormat: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
+          OutputFormat: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
+          SerdeInfo:
+            SerializationLibrary: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
+
