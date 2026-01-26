@@ -16,18 +16,9 @@ echo "Script directory: $SCRIPT_DIR"
 echo "Parent template file: $TEMPLATE_FILE"
 
 # -------- CHECK BOOTSTRAP STACK --------
-echo "Checking if bootstrap stack exists..."
-
-if aws cloudformation describe-stacks \
-    --stack-name "$BOOTSTRAP_STACK" >/dev/null 2>&1; then
-  echo "✅ Bootstrap stack already exists. Skipping creation."
-else
-  echo "🚀 Bootstrap stack not found. Creating..."
-
-  aws cloudformation deploy \
+aws cloudformation deploy \
     --stack-name "$BOOTSTRAP_STACK" \
     --template-file "$BOOTSTRAP_TEMPLATE_FILE"
-fi
 
 # -------- GET BUCKET NAME --------
 BUCKET=$(aws cloudformation describe-stacks \
