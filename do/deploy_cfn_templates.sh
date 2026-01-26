@@ -44,7 +44,7 @@ echo "Uploading Glue ETL scripts to S3..."
 
 aws s3 cp \
   "${SCRIPT_DIR}/../src" \
-  "s3://${SCRIPTS_BUCKET}/etl_src_code/" \
+  "s3://${BUCKET}/etl_src_code/" \
   --recursive
 
 echo "✅ Glue ETL scripts uploaded successfully"
