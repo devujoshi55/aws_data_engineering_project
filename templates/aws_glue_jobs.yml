@@ -1,0 +1,88 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: Stack to create all Glue ETL Jobs (Customers, Accounts, Payments)
+
+Parameters:
+  pGlueETLRole:
+    Description: IAM Role ARN for Glue ETL Jobs
+    Type: String
+
+  pSourceBucket:
+    Description: Name of the source (raw) S3 bucket
+    Type: String
+
+  pDestinationBucket:
+    Description: Name of the destination (curated) S3 bucket
+    Type: String
+
+Resources:
+  CustomersGlueJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: customers-etl-job
+      Role: !Ref pGlueETLRole
+      GlueVersion: "4.0"
+      WorkerType: G.1X
+      NumberOfWorkers: 1
+      Timeout: 30
+      MaxRetries: 1
+      Command:
+        Name: glueetl
+        ScriptLocation: !Sub
+          - s3://${ScriptsBucket}/etl_src_code/customers_etl_job.py
+          - ScriptsBucket: !ImportValue CloudFormationBucket
+      DefaultArguments:
+        "--job-language": "python"
+        "--enable-continuous-cloudwatch-log": "true"
+        "--enable-metrics": "true"
+        "--raw_path": !Sub s3://${pSourceBucket}/customers_raw/
+        "--curated_path": !Sub s3://${pDestinationBucket}/customers/
+        "--curated_database": !ImportValue FinanceDatabaseName
+        "--valuation": '2025-12-31'
+
+  AccountsGlueJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: accounts-etl-job
+      Role: !Ref pGlueETLRole
+      GlueVersion: "4.0"
+      WorkerType: G.1X
+      NumberOfWorkers: 1
+      Timeout: 30
+      MaxRetries: 1
+      Command:
+        Name: glueetl
+        ScriptLocation: !Sub
+          - s3://${ScriptsBucket}/etl_src_code/accounts_etl_job.py
+          - ScriptsBucket: !ImportValue CloudFormationBucket
+      DefaultArguments:
+        "--job-language": "python"
+        "--enable-continuous-cloudwatch-log": "true"
+        "--enable-metrics": "true"
+        "--raw_path": !Sub s3://${pSourceBucket}/accounts_raw/
+        "--curated_path": !Sub s3://${pDestinationBucket}/accounts/
+        "--curated_database": !ImportValue FinanceDatabaseName
+        "--valuation": '2025-11-30'
+
+  PaymentsGlueJob:
+    Type: AWS::Glue::Job
+    Properties:
+      Name: payments-etl-job
+      Role: !Ref pGlueETLRole
+      GlueVersion: "4.0"
+      WorkerType: G.1X
+      NumberOfWorkers: 1
+      Timeout: 30
+      MaxRetries: 1
+      Command:
+        Name: glueetl
+        ScriptLocation: !Sub
+          - s3://${ScriptsBucket}/etl_src_code/accounts_etl_job.py
+          - ScriptsBucket: !ImportValue CloudFormationBucket
+      DefaultArguments:
+        "--job-language": "python"
+        "--enable-continuous-cloudwatch-log": "true"
+        "--enable-metrics": "true"
+        "--raw_path": !Sub s3://${pSourceBucket}/payments_raw/
+        "--curated_path": !Sub s3://${pDestinationBucket}/payments/
+        "--curated_database": !ImportValue FinanceDatabaseName
+        "--valuation": '2025-10-31'

@@ -15,3 +15,5 @@ Resources:
 Outputs:
   CloudFormationBucketName:
     Value: !Ref CloudFormationBucket
+    Export:
+      Name: CloudFormationBucket

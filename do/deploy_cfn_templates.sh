@@ -39,6 +39,17 @@ aws cloudformation package \
 echo "Linting packaged CloudFormation template"
 cfn-lint "$PACKAGED_TEMPLATE"
 
+#--------UPLOAD SRC CODE -------------------
+echo "Uploading Glue ETL scripts to S3..."
+
+aws s3 cp \
+  "${SCRIPT_DIR}/../src" \
+  "s3://${SCRIPTS_BUCKET}/etl_src_code/" \
+  --recursive
+
+echo "✅ Glue ETL scripts uploaded successfully"
+
+
 # -------- DEPLOY MAIN STACK --------
 echo "Deploying main stack: $STACK_NAME"
 

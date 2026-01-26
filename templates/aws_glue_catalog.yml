@@ -1,18 +1,21 @@
 AWSTemplateFormatVersion: '2010-09-09'
-Description: 'This Stack contains all Glue Databse and Tables required for ETL'
+Description: Glue Database and Tables for Curated Finance Data
 
 Parameters:
   pDestinationBucket:
     Type: String
+    Description: S3 bucket for curated data
 
 Resources:
   FinanceDatabase:
     Type: AWS::Glue::Database
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Properties:
       CatalogId: !Ref AWS::AccountId
       DatabaseInput:
         Name: finance_curated
-        Description: "Databse for storing curated data"
+        Description: Database for storing curated finance data
 
   CustomersTable:
     Type: AWS::Glue::Table
@@ -22,11 +25,16 @@ Resources:
       DatabaseName: finance_curated
       TableInput:
         Name: customers_table
-        Description: "Table that contains customer master data"
+        Description: Customer master data
         TableType: EXTERNAL_TABLE
         Parameters:
           classification: parquet
           typeOfData: file
+        PartitionKeys:
+          - Name: year
+            Type: string
+          - Name: month
+            Type: string
         StorageDescriptor:
           Columns:
             - Name: customer_id
@@ -41,12 +49,12 @@ Resources:
               Type: string
             - Name: phone
               Type: string
-          Location: !Sub 's3://${pDestinationBucket}/customers'
+          Location: !Sub s3://${pDestinationBucket}/customers
           InputFormat: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
           OutputFormat: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
           SerdeInfo:
             SerializationLibrary: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
-  
+
   AccountsTable:
     Type: AWS::Glue::Table
     DependsOn: FinanceDatabase
@@ -55,11 +63,16 @@ Resources:
       DatabaseName: finance_curated
       TableInput:
         Name: accounts_table
-        Description: "Table to contain data for accounts transactions"
+        Description: Accounts data
         TableType: EXTERNAL_TABLE
         Parameters:
           classification: csv
           typeOfData: file
+        PartitionKeys:
+          - Name: year
+            Type: string
+          - Name: month
+            Type: string
         StorageDescriptor:
           Columns:
             - Name: account_id
@@ -72,7 +85,7 @@ Resources:
               Type: date
             - Name: status
               Type: string
-          Location: !Sub 's3://${pDestinationBucket}/accounts_data'
+          Location: !Sub s3://${pDestinationBucket}/accounts_data
           InputFormat: org.apache.hadoop.mapred.TextInputFormat
           OutputFormat: org.apache.hadoop.hive.ql.io.HiveIgnoreKeyTextOutputFormat
           Compressed: false
@@ -89,10 +102,15 @@ Resources:
       DatabaseName: finance_curated
       TableInput:
         Name: payments_table
-        Description: "Customer payments"
+        Description: Customer payments
         TableType: EXTERNAL_TABLE
         Parameters:
           classification: parquet
+        PartitionKeys:
+          - Name: year
+            Type: string
+          - Name: month
+            Type: string
         StorageDescriptor:
           Columns:
             - Name: payment_id
@@ -105,9 +123,15 @@ Resources:
               Type: string
             - Name: payment_ts
               Type: timestamp
-          Location: !Sub 's3://${pDestinationBucket}/payments'
+          Location: !Sub s3://${pDestinationBucket}/payments
           InputFormat: org.apache.hadoop.hive.ql.io.parquet.MapredParquetInputFormat
           OutputFormat: org.apache.hadoop.hive.ql.io.parquet.MapredParquetOutputFormat
           SerdeInfo:
             SerializationLibrary: org.apache.hadoop.hive.ql.io.parquet.serde.ParquetHiveSerDe
 
+Outputs:
+  FinanceDatabaseName:
+    Description: Glue database name
+    Value: finance_curated
+    Export:
+      Name: FinanceDatabaseName
