@@ -84,12 +84,12 @@ Resources:
               - s3:PutObject
             Resource: !Sub '${SourceBBucket.Arn}/*'
 
-  GlueStack:
-    Type: AWS::CloudFormation::Stack
-    Properties:
-      TemplateURL: ./aws_glue_catalog.yml
-      Parameters:
-        pDestinationBucket: !Ref SourceBBucket
+  # GlueStack:
+  #   Type: AWS::CloudFormation::Stack
+  #   Properties:
+  #     TemplateURL: ./aws_glue_catalog.yml
+  #     Parameters:
+  #       pDestinationBucket: !Ref SourceBBucket
 
 Outputs:
   oGlueEtlRole:

@@ -1,0 +1,17 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: 'Bootsrap stack to create the primary resources like bucket'
+
+Resources:
+  CloudFormationBucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: aws-cloudformation-boootstrap-bucket
+      VersioningConfiguration:
+        Status: Enabled
+      OwnershipControls:
+        Rules:
+          - ObjectOwnership: BucketOwnerEnforced
+
+Outputs:
+  CloudFormationBucketName:
+    Value: !Ref CloudFormationBucket
