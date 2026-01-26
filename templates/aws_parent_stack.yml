@@ -90,8 +90,6 @@ Resources:
       TemplateURL: ./aws_glue_catalog.yml
       Parameters:
         pDestinationBucket: !Ref SourceBBucket
-        pSourceBucket: !Ref SourceABucket
-        pGlueETLRole: !Ref GlueETLRole
 
   GlueJobStack:
     Type: AWS::CloudFormation::Stack
