@@ -94,7 +94,7 @@ Resources:
         pGlueETLRole: !Ref GlueETLRole
 
   GlueJobStack:
-    Type: AWS::cloudformation::Stack
+    Type: AWS::CloudFormation::Stack
     Properties:
       TemplateURL: ./aws_glue_jobs.yml
       Parameters:
