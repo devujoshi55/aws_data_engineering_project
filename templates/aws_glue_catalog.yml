@@ -16,6 +16,7 @@ Resources:
 
   CustomersTable:
     Type: AWS::Glue::Table
+    DependsOn: FinanceDatabase
     Properties:
       CatalogId: !Ref AWS::AccountId
       DatabaseName: finance_curated
@@ -48,6 +49,7 @@ Resources:
   
   AccountsTable:
     Type: AWS::Glue::Table
+    DependsOn: FinanceDatabase
     Properties:
       CatalogId: !Ref AWS::AccountId
       DatabaseName: finance_curated
@@ -81,6 +83,7 @@ Resources:
 
   PaymentsTable:
     Type: AWS::Glue::Table
+    DependsOn: FinanceDatabase
     Properties:
       CatalogId: !Ref AWS::AccountId
       DatabaseName: finance_curated
